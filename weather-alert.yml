@@ -1,0 +1,41 @@
+name: 微信雨雪提醒
+
+on:
+  schedule:
+    # 每 15 分钟检查一次（UTC 时间，GitHub 用 UTC 定时）
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '运行模式：check=正常检查，test=发一条测试消息'
+        required: false
+        default: 'check'
+
+permissions:
+  contents: write
+
+jobs:
+  weather-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 检查未来1小时降水并推送微信（纯标准库，无依赖）
+        shell: bash
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.mode }}" = "test" ]; then ARGS="--test"; fi
+          python main.py $ARGS
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          QWEATHER_KEY: ${{ secrets.QWEATHER_KEY }}
+
+      - name: 保存去重状态（提交回仓库）
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update weather alert state [skip ci]'
+          file_pattern: state.json

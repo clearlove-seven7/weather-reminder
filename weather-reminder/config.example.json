@@ -1,0 +1,15 @@
+{
+  "provider": "auto",
+  "pushplus_token": "",
+  "qweather_key": "",
+  "qweather_base": "https://devapi.qweather.com",
+  "lookahead_minutes": 60,
+  "precip_threshold_mmh": 0.1,
+  "snow_temp_c": 1.0,
+  "dedupe_minutes": 90,
+  "state_file": "state.json",
+  "cities": [
+    { "name": "长春", "lat": 43.8868, "lon": 125.3245 },
+    { "name": "阳泉", "lat": 37.857, "lon": 113.5753 }
+  ]
+}
